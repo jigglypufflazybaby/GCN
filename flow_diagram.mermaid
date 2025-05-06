@@ -1,0 +1,66 @@
+flowchart TD
+    subgraph "Input Layer [Per Face]"
+        I1[Face Normal\n3D vector]
+        I2[Face Center\n3D vector]
+        I3[Face Area\nscalar]
+        I4[OBB Dimensions\n3D vector]
+        I5[OBB Orientation\n4D quaternion]
+        I6[Boundary Points\nN x 3D vectors]
+        I7[Adjacent Face IDs\nVariable length]
+    end
+
+    subgraph "Feature Processing [Dim: 64 per face]"
+        F1[Geometric Feature Extractor\nMLP: 16→32→64]
+        F2[Boundary Feature Extractor\nPointNet: Nx3→128→64]
+        F3[Topological Feature Extractor\nGCN: Adj matrix → 64]
+    end
+
+    subgraph "Graph Construction [Nodes: #Faces, Features: 192]"
+        G1[Face Node Features\nDim: 192 per face]
+        G2[Face Adjacency Matrix\nDim: #Faces × #Faces]
+    end
+
+    subgraph "Graph Neural Network [192→256→128]"
+        GNN1[Graph Conv Layer 1\n192→256]
+        GNN2[Graph Conv Layer 2\n256→256]
+        GNN3[Graph Conv Layer 3\n256→128]
+    end
+
+    subgraph "Context Integration [Dim: 128+64=192]"
+        C1[Global Context\nGraph Pooling: 128]
+        C2[Local Context\nNeighborhood Pooling: 64]
+    end
+
+    subgraph "Classification Head [192→128→64→#Classes]"
+        CL1[Dense Layer\n192→128]
+        CL2[Dense Layer\n128→64]
+        CL3[Output Layer\n64→#Classes]
+    end
+
+    subgraph "Output"
+        O1[Face Labels\nDim: #Classes]
+    end
+
+    I1 & I2 & I3 & I4 & I5 --> F1
+    I6 --> F2
+    I7 --> F3
+
+    F1 --> |64| G1
+    F2 --> |64| G1
+    F3 --> |64| G1
+
+    G1 --> |192| GNN1
+    G2 --> GNN1
+
+    GNN1 --> |256| GNN2
+    GNN2 --> |256| GNN3
+
+    GNN3 --> |128| C1
+    GNN3 --> |128| C2
+
+    C1 --> |128| CL1
+    C2 --> |64| CL1
+
+    CL1 --> |128| CL2
+    CL2 --> |64| CL3
+    CL3 --> |#Classes| O1

@@ -1,0 +1,44 @@
+cad_face_prediction/
+│
+├── data/                         # Data storage folder
+│   ├── raw/                      # Raw CAD files 
+│   ├── processed/                # Processed feature data
+│   └── splits/                   # Train/val/test splits
+│
+├── src/                          # Source code
+│   ├── __init__.py
+│   ├── data/
+│   │   ├── __init__.py
+│   │   ├── cad_parser.py         # CAD file parsing utilities
+│   │   ├── feature_extraction.py # Extract features from CAD faces
+│   │   ├── dataset.py            # PyTorch dataset classes
+│   │   └── preprocessing.py      # Data preprocessing functions
+│   │
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── feature_extractors.py # Specialized feature extraction modules
+│   │   ├── gnn.py                # Graph neural network modules
+│   │   └── model.py              # Full model implementation
+│   │
+│   ├── training/
+│   │   ├── __init__.py
+│   │   ├── train.py              # Training loop
+│   │   ├── evaluate.py           # Evaluation functions
+│   │   └── config.py             # Training configuration
+│   │
+│   └── utils/
+│       ├── __init__.py
+│       ├── visualization.py      # Visualization tools
+│       └── metrics.py            # Evaluation metrics
+│
+├── notebooks/                    # Jupyter notebooks
+│   ├── data_exploration.ipynb    # Data exploration examples
+│   └── model_analysis.ipynb      # Model analysis and visualization
+│
+├── scripts/                      # Utility scripts
+│   ├── preprocess_data.py        # Data preprocessing script 
+│   └── train_model.py            # Training script
+│
+├── requirements.txt              # Project dependencies
+├── setup.py                      # Package setup
+└── README.md                     # Project documentation
